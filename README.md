@@ -50,7 +50,7 @@ The extension runs until you restart Firefox. Reload after `sbt packageDev` to p
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MPL 2.0 — see [LICENSE](LICENSE).
 
 ## Credits
 
