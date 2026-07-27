@@ -1,0 +1,19 @@
+# Scala
+*.class
+*.jar
+*.log
+
+# sbt
+.sbt/
+target/
+dist/
+
+# BSP
+.bsp/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/

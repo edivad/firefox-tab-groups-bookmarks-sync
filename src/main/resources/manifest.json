@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Groups & Bookmarks Sync",
+  "version": "0.1.0",
+  "description": "Two-way sync between Firefox tab groups and bookmark folders",
+  "permissions": [
+    "tabGroups",
+    "bookmarks",
+    "tabs"
+  ],
+  "background": {
+    "scripts": [
+      "main.js"
+    ]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tab-group-sync@edivad.github",
+      "strict_min_version": "139.0"
+    }
+  },
+  "icons": {
+    "16": "icons/icon.svg",
+    "32": "icons/icon.svg",
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  }
+}
