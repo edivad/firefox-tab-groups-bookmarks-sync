@@ -28,7 +28,7 @@ them in your bookmarks.
 ### Compile and package
 
 ```bash
-sbt packageDev
+sbt packageFast
 ```
 
 Output goes to `dist/` as `main.js`, `main.js.map`, and `manifest.json`.
@@ -39,7 +39,7 @@ Output goes to `dist/` as `main.js`, `main.js.map`, and `manifest.json`.
 2. Click **Load Temporary Add-on…**
 3. Select `dist/manifest.json`
 
-The extension runs until you restart Firefox. Reload after `sbt packageDev` to pick up changes.
+The extension runs until you restart Firefox. Reload after `sbt packageFast` to pick up changes.
 
 ## API Reference
 

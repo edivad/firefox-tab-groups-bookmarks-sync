@@ -52,7 +52,7 @@ jobs:
           license: MPL-2.0
           approval-note: |
             Compiled from Scala.js sources; main.js is minified by the Scala.js
-            compiler. Build with `sbt --client packageDev` (see scripts/package.sh).
+            compiler. Build with `sbt --client packageRelease` (see scripts/package.sh).
             The source ZIP contains the full project including build configuration
             and tests.
           auth-api-issuer: ${{ secrets.AMO_JWT_ISSUER }}
