@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tab Groups & Bookmarks Sync",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Two-way sync between Firefox tab groups and bookmark folders",
   "permissions": [
     "tabGroups",

@@ -2,9 +2,10 @@
 set -euo pipefail
 
 VERSION=${1:-$(git describe --tags --always 2>/dev/null || echo "0.1.0")}
+SBT_CMD=${SBT_CMD:-sbt --client}
 
 echo "=== Running sbt packageDev ==="
-sbt --client packageDev
+$SBT_CMD packageDev
 
 echo "=== Creating extension ZIP ==="
 cd dist

@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: sbt
+      - uses: sbt/setup-sbt@v1
+      - run: sbt test
+      - run: sbt scalafmtCheckAll
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: sbt
+      - uses: sbt/setup-sbt@v1
+      - name: Compute version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+      - name: Verify manifest version matches tag
+        run: |
+          manifest_version="$(jq -r '.version' src/main/resources/manifest.json)"
+          if [[ "$manifest_version" != "$VERSION" ]]; then
+            echo "::error::Tag v$VERSION does not match manifest version $manifest_version"
+            exit 1
+          fi
+      - name: Package
+        env:
+          SBT_CMD: sbt
+        run: ./scripts/package.sh "$VERSION"
+      - name: Submit to AMO
+        uses: browser-actions/release-firefox-addon@latest
+        with:
+          addon-id: tab-groups-bookmarks-sync
+          addon-path: extension-${{ env.VERSION }}.zip
+          source-path: source-${{ env.VERSION }}.zip
+          license: MPL-2.0
+          approval-note: |
+            Compiled from Scala.js sources; main.js is minified by the Scala.js
+            compiler. Build with `sbt --client packageDev` (see scripts/package.sh).
+            The source ZIP contains the full project including build configuration
+            and tests.
+          auth-api-issuer: ${{ secrets.AMO_JWT_ISSUER }}
+          auth-api-secret: ${{ secrets.AMO_JWT_SECRET }}
