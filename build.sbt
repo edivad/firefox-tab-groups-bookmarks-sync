@@ -12,7 +12,8 @@ ThisBuild / scalacOptions ++= Seq(
   "-no-indent",
 )
 
-val packageDev = taskKey[File]("Package the extension into dist/ (fast, for development)")
+val packageFast = taskKey[File]("Package the extension into dist/ (fastLinkJS, for development)")
+val packageRelease = taskKey[File]("Package the extension into dist/ (fullLinkJS, optimized, for release)")
 val distDir = settingKey[File]("Extension output directory")
 
 lazy val root = project
@@ -30,17 +31,17 @@ lazy val root = project
       "org.scalameta" %%% "munit" % "1.3.3" % Test,
       "org.scalameta" %%% "munit-scalacheck" % "1.3.0" % Test,
     ),
-    packageDev := {
-      val outputDir = (Compile / crossTarget).value / s"${(Compile / moduleName).value}-fastopt"
-      val manifestSrc = (Compile / resourceDirectory).value / "manifest.json"
-      val iconsSrc = (Compile / resourceDirectory).value / "icons"
+    packageFast := {
       val _ = (Compile / fastLinkJS).value
-      IO.createDirectory(distDir.value)
-      IO.copyFile(outputDir / "main.js", distDir.value / "main.js")
-      val mapFile = outputDir / "main.js.map"
-      if (mapFile.exists) IO.copyFile(mapFile, distDir.value / "main.js.map")
-      IO.copyFile(manifestSrc, distDir.value / "manifest.json")
-      IO.copyDirectory(iconsSrc, distDir.value / "icons")
+      val outputDir = (Compile / crossTarget).value / s"${(Compile / moduleName).value}-fastopt"
+      BuildHelper.packageFiles(outputDir, distDir.value, (Compile / resourceDirectory).value / "manifest.json", (Compile / resourceDirectory).value / "icons")
+      streams.value.log.info(s"Extension packaged to ${distDir.value}")
+      distDir.value
+    },
+    packageRelease := {
+      val _ = (Compile / fullLinkJS).value
+      val outputDir = (Compile / crossTarget).value / s"${(Compile / moduleName).value}-opt"
+      BuildHelper.packageFiles(outputDir, distDir.value, (Compile / resourceDirectory).value / "manifest.json", (Compile / resourceDirectory).value / "icons")
       streams.value.log.info(s"Extension packaged to ${distDir.value}")
       distDir.value
     },
