@@ -43,12 +43,26 @@ jobs:
         env:
           SBT_CMD: sbt
         run: ./scripts/package.sh "$VERSION"
+      - name: Generate release notes
+        id: release-notes
+        run: |
+          prev=$(git describe --tags --abbrev=0 "${GITHUB_REF_NAME}^" 2>/dev/null || true)
+          if [[ -n "$prev" ]]; then
+            notes=$(git log --format='- %s' "$prev".."${GITHUB_REF_NAME}^")
+          fi
+          if [[ -z "${notes:-}" ]]; then
+            notes="Tab Groups Bookmarks Sync v${VERSION}."
+          fi
+          echo "notes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$notes" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
       - name: Submit to AMO
         uses: browser-actions/release-firefox-addon@latest
         with:
           addon-id: tab-groups-bookmarks-sync
           addon-path: extension-${{ env.VERSION }}.zip
           source-path: source-${{ env.VERSION }}.zip
+          release-note: ${{ steps.release-notes.outputs.notes }}
           license: MPL-2.0
           approval-note: |
             Compiled from Scala.js sources; main.js is minified by the Scala.js
