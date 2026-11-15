@@ -13,6 +13,7 @@ object JsDecoder {
     case UnsupportedType(s: String)
     case MissingId
     case InvalidNumber
+    case InvalidSession(detail: String)
   }
 
 }

@@ -12,14 +12,16 @@ case class MockTabs(
   createResponses: mutable.ListBuffer[Tab] = mutable.ListBuffer.empty,
   groupRequests: mutable.ListBuffer[Tabs.GroupTabs] = mutable.ListBuffer.empty,
   groupResponses: mutable.ListBuffer[TabGroup.Id] = mutable.ListBuffer.empty,
+  updatedCallbacks: mutable.ListBuffer[Tab => Unit] = mutable.ListBuffer.empty,
 ) extends Tabs {
 
   def snapshot: MockTabs.Snapshot = MockTabs.Snapshot(
     create = createRequests.toList,
     group = groupRequests.toList,
+    listeners = MockTabs.Listeners(updated = updatedCallbacks.size),
   )
 
-  override def onTabUpdate(callback: Tab => Unit): Unit = ()
+  override def onTabUpdate(callback: Tab => Unit): Unit = updatedCallbacks.addOne(callback)
 
   override def query(): Future[List[Tab]] = Future.successful(queryResponses.remove(0))
 
@@ -33,14 +35,20 @@ case class MockTabs(
     Future.successful(groupResponses.remove(0))
   }
 
+  def fireUpdated(tab: Tab): Unit = updatedCallbacks.foreach(_.apply(tab))
+
 }
 
 object MockTabs {
+
   val unused: MockTabs = MockTabs()
+
+  case class Listeners(updated: Int = 0)
 
   case class Snapshot(
     create: List[Tabs.CreateTab] = Nil,
     group: List[Tabs.GroupTabs] = Nil,
+    listeners: Listeners = Listeners(),
   )
 
 }

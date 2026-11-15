@@ -14,6 +14,7 @@ final class EventSync(
   planner: SyncPlanner,
   tabGroups: TabGroups,
   tabs: Tabs,
+  store: SessionStore,
 )(using ExecutionContext) {
 
   private var queue: Future[State] = Future.successful(initial)
@@ -49,13 +50,24 @@ final class EventSync(
     onErrorMessage: Throwable => String,
   ): Unit = {
     val prev = queue
-    queue = prev.flatMap(state =>
-      doNext(state).recover { e =>
-        Log(Source.EventSync, onErrorMessage(e))
-        state
-      },
-    )
+    queue = prev.flatMap { before =>
+      doNext(before)
+        .recover { e =>
+          Log(Source.EventSync, onErrorMessage(e))
+          before
+        }
+        .flatMap(after => if after == before then Future.successful(after) else persist(after))
+    }
   }
+
+  private def persist(state: State): Future[State] =
+    store
+      .save(SessionState(root, state))
+      .map(_ => state)
+      .recover { e =>
+        Log(Source.Storage, s"Cannot save session state: $e")
+        state
+      }
 
   private def processTabGroupCreated(state: State, tabGroup: TabGroup): Future[State] =
     for {

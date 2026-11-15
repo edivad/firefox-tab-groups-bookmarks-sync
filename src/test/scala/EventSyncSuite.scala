@@ -1,5 +1,5 @@
 import mock.MockBookmarks.Snapshot
-import mock.{MockBookmarks, MockSyncPlanner, MockTabGroups, MockTabs}
+import mock.{MockBookmarks, MockSessionStore, MockSyncPlanner, MockTabGroups, MockTabs}
 import tabgroupsbookmarkssync.model.*
 import tabgroupsbookmarkssync.service.{EventSync, SyncError}
 import tabgroupsbookmarkssync.spi.Bookmarks
@@ -24,7 +24,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Right(Some(Bookmarks.CreateFolder(parentId = rootId, title = tg.title)))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabGroupCreated(tg)
@@ -47,7 +55,15 @@ class EventSyncSuite extends munit.FunSuite {
     val state = newState(foldersByTabGroupId = Map(tg.id -> f))
     val planner = MockSyncPlanner(createFolderResponses = mutable.ListBuffer(Right(None)))
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabGroupCreated(tg)
@@ -71,7 +87,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Right(Bookmarks.UpdateFolder(id = f.id, title = newTitle))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabGroupUpdated(tg.copy(title = newTitle))
@@ -95,7 +119,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Left(SyncError.FolderNotFoundForTabGroup(tg))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabGroupUpdated(tg)
@@ -123,7 +155,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Right(Bookmarks.RemoveFolder(id = f.id))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabGroupRemoved(tg)
@@ -147,7 +187,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Left(SyncError.FolderNotFoundForTabGroup(tg))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabGroupRemoved(tg)
@@ -176,7 +224,15 @@ class EventSyncSuite extends munit.FunSuite {
       ),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabGroupCreated(tg1)
@@ -213,7 +269,15 @@ class EventSyncSuite extends munit.FunSuite {
       ),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(t)
@@ -248,7 +312,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Left(SyncError.MissingUrlForTab(t))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(t)
@@ -269,7 +341,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Left(SyncError.FolderNotFoundForTabGroupId(t.groupId.get))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(t)
@@ -297,7 +377,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Right(Bookmarks.RemoveBookmark(id = bm.id))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(id = t.id, groupId = None))
@@ -323,7 +411,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Right(Bookmarks.RemoveBookmark(id = bm.id))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(id = t.id, groupId = None))
@@ -350,7 +446,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Left(SyncError.BookmarkNotFoundForTab(tab(id = t.id, groupId = None)))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(id = t.id, groupId = None))
@@ -379,7 +483,15 @@ class EventSyncSuite extends munit.FunSuite {
     )
     val planner = MockSyncPlanner()
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when — same group as before
     underTest.tabUpdated(t)
@@ -418,7 +530,15 @@ class EventSyncSuite extends munit.FunSuite {
       ),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when — group creation and tab update back-to-back
     underTest.tabGroupCreated(tg)
@@ -473,7 +593,15 @@ class EventSyncSuite extends munit.FunSuite {
       ),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(id = t.id, groupId = Some(tg2.id)))
@@ -527,7 +655,15 @@ class EventSyncSuite extends munit.FunSuite {
       ),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(id = t.id, groupId = Some(tg.id)))
@@ -571,7 +707,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Left(SyncError.FolderNotFoundForTabGroupId(newTg.id))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(id = t.id, groupId = Some(newTg.id)))
@@ -608,7 +752,15 @@ class EventSyncSuite extends munit.FunSuite {
       ),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(id = t.id, groupId = Some(tg2.id)))
@@ -632,7 +784,15 @@ class EventSyncSuite extends munit.FunSuite {
     val state = newState()
     val planner = MockSyncPlanner()
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(groupId = None))
@@ -660,7 +820,15 @@ class EventSyncSuite extends munit.FunSuite {
       mutable.ListBuffer(Right(Bookmarks.RemoveBookmark(id = bm.id))),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(id = t.id, groupId = None))
@@ -704,7 +872,15 @@ class EventSyncSuite extends munit.FunSuite {
       ),
     )
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(tab(id = t.id, groupId = Some(tg2.id)))
@@ -738,7 +914,15 @@ class EventSyncSuite extends munit.FunSuite {
     val state = newState()
     val planner = MockSyncPlanner(createFolderResponses = mutable.ListBuffer(Right(None)))
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabGroupCreated(tg)
@@ -759,7 +943,15 @@ class EventSyncSuite extends munit.FunSuite {
     val state = newState(foldersByTabGroupId = Map(tg.id -> f))
     val planner = MockSyncPlanner(createBookmarkResponses = mutable.ListBuffer(Right(None)))
     val underTest =
-      EventSync(rootId, state, bookmarks, planner, MockTabGroups.unused, MockTabs.unused)
+      EventSync(
+        rootId,
+        state,
+        bookmarks,
+        planner,
+        MockTabGroups.unused,
+        MockTabs.unused,
+        MockSessionStore.unused,
+      )
 
     // when
     underTest.tabUpdated(t)
@@ -771,6 +963,90 @@ class EventSyncSuite extends munit.FunSuite {
         state,
         newState(foldersByTabGroupId = Map(tg.id -> f)),
       )
+    }
+  }
+
+  test("persists state after a change") {
+    // given
+    val f = folder(parentId = rootId)
+    val tg = tabGroup()
+    val bookmarks = MockBookmarks(createFolderResponses = mutable.ListBuffer(f))
+    val state = newState()
+    val planner = MockSyncPlanner(createFolderResponses =
+      mutable.ListBuffer(Right(Some(Bookmarks.CreateFolder(parentId = rootId, title = tg.title)))),
+    )
+    val store = MockSessionStore()
+    val underTest = EventSync(
+      rootId,
+      state,
+      bookmarks,
+      planner,
+      MockTabGroups.unused,
+      MockTabs.unused,
+      store,
+    )
+
+    // when
+    underTest.tabGroupCreated(tg)
+
+    // then
+    underTest.whenIdle().map { state =>
+      assertEquals(store.snapshot.save, List(SessionState(rootId, state)))
+    }
+  }
+
+  test("does not persist state when the event changes nothing") {
+    // given
+    val tg = tabGroup()
+    val state = newState()
+    val store = MockSessionStore()
+    val planner = MockSyncPlanner(createFolderResponses = mutable.ListBuffer(Right(None)))
+    val underTest = EventSync(
+      rootId,
+      state,
+      MockBookmarks.unused,
+      planner,
+      MockTabGroups.unused,
+      MockTabs.unused,
+      store,
+    )
+
+    // when
+    underTest.tabGroupCreated(tg)
+
+    // then
+    underTest.whenIdle().map { result =>
+      assertEquals(result, state)
+      assertEquals(store.snapshot.save, List.empty)
+    }
+  }
+
+  test("keeps the new state when persisting fails") {
+    // given
+    val f = folder(parentId = rootId)
+    val tg = tabGroup()
+    val bookmarks = MockBookmarks(createFolderResponses = mutable.ListBuffer(f))
+    val state = newState()
+    val planner = MockSyncPlanner(createFolderResponses =
+      mutable.ListBuffer(Right(Some(Bookmarks.CreateFolder(parentId = rootId, title = tg.title)))),
+    )
+    val store = MockSessionStore(saveFailures = mutable.ListBuffer(Exception("failed")))
+    val underTest = EventSync(
+      rootId,
+      state,
+      bookmarks,
+      planner,
+      MockTabGroups.unused,
+      MockTabs.unused,
+      store,
+    )
+
+    // when
+    underTest.tabGroupCreated(tg)
+
+    // then
+    underTest.whenIdle().map { result =>
+      assertEquals(result, newState(foldersByTabGroupId = Map(tg.id -> f)))
     }
   }
 

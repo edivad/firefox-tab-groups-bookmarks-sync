@@ -1,9 +1,11 @@
 package tabgroupsbookmarkssync.log
 
 enum Source {
+  case Bootstrap
+  case EventSync
   case Main
   case StartupSync
-  case EventSync
+  case Storage
   case TabGroups
   case Tabs
 }

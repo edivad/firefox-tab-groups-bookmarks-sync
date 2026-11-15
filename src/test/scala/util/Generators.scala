@@ -1,7 +1,7 @@
 package util
 
 import org.scalacheck.Gen
-import tabgroupsbookmarkssync.model.{BookmarkNode, Tab, TabGroup}
+import tabgroupsbookmarkssync.model.{BookmarkNode, SessionState, State, Tab, TabGroup}
 
 object Generators {
 
@@ -71,5 +71,22 @@ object Generators {
     parentId <- bookmarkNodeId
     title <- title
   } yield BookmarkNode.Bookmark(id = id, parentId = parentId, title = title, url = None)
+
+  val bookmark: Gen[BookmarkNode.Bookmark] = Gen.oneOf(bookmarkWithUrl, bookmarkWithNoUrl)
+
+  val syncState: Gen[State] = for {
+    folders <- Gen.mapOf(Gen.zip(tabGroupId, folder))
+    bookmarks <- Gen.mapOf(Gen.zip(tabId, bookmark))
+    tabGroups <- Gen.mapOf(Gen.zip(tabId, tabGroupId))
+  } yield State(
+    foldersByTabGroupId = folders,
+    bookmarksByTabId = bookmarks,
+    tabGroupsForTabs = tabGroups,
+  )
+
+  val sessionState: Gen[SessionState] = for {
+    root <- bookmarkNodeId
+    state <- syncState
+  } yield SessionState(root = root, state = state)
 
 }
