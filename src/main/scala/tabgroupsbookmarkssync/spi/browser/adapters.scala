@@ -68,3 +68,11 @@ private[browser] object TabsFacade extends js.Object {
   def create(createProperties: js.Object): js.Promise[Tab] = js.native
   def group(options: js.Object): js.Promise[Double] = js.native
 }
+
+@js.native
+@js.annotation.JSGlobal("browser.storage.session")
+private[browser] object SessionStorageFacade extends js.Object {
+  def get(keys: String): js.Promise[js.Dictionary[js.Any]] = js.native
+  def set(items: js.Any): js.Promise[Unit] = js.native
+  def remove(keys: String): js.Promise[Unit] = js.native
+}

@@ -9,6 +9,7 @@ import scala.concurrent.Future
 case class MockBookmarks(
   getChildrenRequests: mutable.ListBuffer[Bookmarks.GetChildren] = mutable.ListBuffer.empty,
   getChildrenResponses: mutable.ListBuffer[List[BookmarkNode]] = mutable.ListBuffer.empty,
+  getChildrenFailures: mutable.ListBuffer[Throwable] = mutable.ListBuffer.empty,
   createFolderRequests: mutable.ListBuffer[Bookmarks.CreateFolder] = mutable.ListBuffer.empty,
   createFolderResponses: mutable.ListBuffer[BookmarkNode.Folder] = mutable.ListBuffer.empty,
   updateFolderRequests: mutable.ListBuffer[Bookmarks.UpdateFolder] = mutable.ListBuffer.empty,
@@ -30,11 +31,11 @@ case class MockBookmarks(
     removeBookmark = removeBookmarkRequests.toList,
   )
 
-  override def getChildren(request: Bookmarks.GetChildren): Future[List[BookmarkNode]] =
-    Future.successful {
-      getChildrenRequests.addOne(request)
-      getChildrenResponses.remove(0)
-    }
+  override def getChildren(request: Bookmarks.GetChildren): Future[List[BookmarkNode]] = {
+    getChildrenRequests.addOne(request)
+    if getChildrenFailures.nonEmpty then Future.failed(getChildrenFailures.remove(0))
+    else Future.successful(getChildrenResponses.remove(0))
+  }
 
   override def createFolder(request: Bookmarks.CreateFolder): Future[BookmarkNode.Folder] =
     Future.successful {
